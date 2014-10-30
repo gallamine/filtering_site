@@ -2,3 +2,4 @@ flask
 flask-api
 numpy
 matplotlib
+gunicorn
