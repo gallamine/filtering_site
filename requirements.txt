@@ -1,0 +1,4 @@
+flask
+flask-api
+numpy
+matplotlib
