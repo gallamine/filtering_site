@@ -9,7 +9,7 @@ class Filter():
 
     def make_FIR_LPF(self,num_taps=40,cutoff=0.5,window=('kaiser',8)):
 
-        self.b = signal.firwin(num_taps, cutoff, window=window)
+        self.b = signal.firwin(int(num_taps), float(cutoff), window=window)
         return True
 
     def return_spectrum(self):
