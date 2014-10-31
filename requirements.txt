@@ -3,3 +3,5 @@ flask-restful
 numpy
 matplotlib
 gunicorn
+matplotlib
+scipy
