@@ -30,18 +30,20 @@ class FilterHandle(restful.Resource):
         except Exception as e:
             return {'error':e}
 
-    def get(self,fid,command):
+
+    def get(self,command):
         '''
 
         :type fid: unicode
         :type command: unicode
         :return:
         '''
-        if fid == "new":
+        if command == "new":
             # Create a new filter object
             return self.createNewFilter()
 
         else:
+            fid = request.args.get('fid','')
             if fid in all_filters.keys():
 
                 if command == "taps":
@@ -65,8 +67,7 @@ class FilterHandle(restful.Resource):
             else:
                 return {'error':"Invalid filter ID"}
 
-
-api.add_resource(FilterHandle, '/filter/<fid>/<command>')
+api.add_resource(FilterHandle, '/filter/<command>')
 
 class FilterPlotting(restful.Resource):
     def get(self,fid,command):

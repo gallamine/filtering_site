@@ -46,10 +46,10 @@ class Filter():
         try:
             if len(new_data) > len(self.fir_coeff):
 
-                self.data = new_data[-len(fir_coeff):] #Only save the last bit of data to give filter history
-                new_data = np.concatenate(self.data,new_data)  # Filter history
+                self.data = new_data[-len(self.fir_coeff):] #Only save the last bit of data to give filter history
+                new_data = np.concatenate((self.data,new_data))  # Filter history
                 filtered_signal = signal.lfilter(self.fir_coeff,1.0, new_data)
-                return filtered_signal[len(fir_coeff):]
+                return filtered_signal[len(self.fir_coeff):]
             else:
                 self.data = np.roll(self.data,-len(new_data))  #Shift old data out
                 self.data[-len(new_data):] = new_data     #Shift in new data
