@@ -42,14 +42,16 @@ class Filter():
         :param new_data: New data to be filtered
         :return: the filtered data of the same length as the input data
         '''
+        new_data = new_data.strip('[]')
         new_data = [float(i) for i in new_data.split(',') if i is not '']
         try:
             if len(new_data) > len(self.fir_coeff):
 
-                self.data = new_data[-len(self.fir_coeff):] #Only save the last bit of data to give filter history
-                new_data = np.concatenate((self.data,new_data))  # Filter history
+                #self.data = new_data[-len(self.fir_coeff):] #Only save the last bit of data to give filter history
+                #new_data = np.concatenate((self.data,new_data))  # Filter history
                 filtered_signal = signal.lfilter(self.fir_coeff,1.0, new_data)
-                return filtered_signal[len(self.fir_coeff):]
+                return filtered_signal
+                #return filtered_signal[len(self.fir_coeff):]
             else:
                 self.data = np.roll(self.data,-len(new_data))  #Shift old data out
                 self.data[-len(new_data):] = new_data     #Shift in new data
