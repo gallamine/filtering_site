@@ -2,6 +2,7 @@ import shelve
 from pymongo import MongoClient
 import pickle
 import os
+import datetime
 global db
 
 class Database():
@@ -23,6 +24,7 @@ class Database():
         client = MongoClient('mongodb://{0}:{1}@ds063160.mongolab.com:63160/{2}'.format(username, password, DB_NAME))
         db = client[DB_NAME]
 
+        db.filters.ensure_index("createdAt", expireAfterSeconds = 7*24*60*60)
         return db
 
 
@@ -36,7 +38,7 @@ class Database():
         collection_name = "filters"
         try:
             collection = self.db[collection_name]
-            collection.insert({"_id": str(Filter.fid), "object": pickle.dumps(Filter)})
+            collection.insert({"_id": str(Filter.fid), "createdAt": datetime.datetime.utcnow(), "object": pickle.dumps(Filter)})
         except Exception as e:
             return False, e
 
