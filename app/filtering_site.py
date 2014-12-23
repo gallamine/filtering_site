@@ -117,12 +117,19 @@ def filter_commands(command):
                         return jsonify({'error': 'Send me some data!'})
                     else:
                         padding = request.args.get('padding', 'True')    # Preserve filter history
+                        if padding == "false" or padding == "False":
+                            padding = False
+                        else:
+                            padding = True
                         data_resp = app.all_filters[fid].runFilter(data, padding)
                         if isinstance(data_resp, dict):
                             return jsonify(data_resp)
                         else:
                             app.db.saveFilter(app.all_filters[fid])
-                            return jsonify({'fid': fid, 'data_in': data, 'data_out': data_resp.tolist()})
+                            return jsonify({'fid': fid,
+                                            'data_in': data,
+                                            'data_out': data_resp.tolist(),
+                                            'padding': padding})
                 else:
                     return jsonify({'hello': 'world', 'fid': fid})
             else:
