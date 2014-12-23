@@ -23,9 +23,9 @@ class Database():
 
         client = MongoClient('mongodb://{0}:{1}@ds063160.mongolab.com:63160/{2}'.format(username, password, DB_NAME))
         db = client[DB_NAME]
-
-        db.filters.ensure_index("createdAt", expireAfterSeconds = 7*24*60*60)
+        # db.filters.ensure_index("createdAt", expireAfterSeconds=7*24*60*60)
         return db
+
 
 
     def saveFilter(self, Filter):
@@ -42,7 +42,6 @@ class Database():
         except Exception as e:
             return False, e
 
-
     def loadAllFilters(self):
         """
         Load all of the filters in the "filters" collection in to a dict of Python Filter objects
@@ -56,6 +55,32 @@ class Database():
 
         print "Loaded {0} filters".format(len(all_filters))
         return all_filters
+
+    def getSingleFilter(self, fid):
+        """
+        Get one filter from mongo for testing purposes
+        :param fid: _id or FID of the filter to get from Mongo
+        :return: the _id from the DB (or None if it doesn't exist)
+        """
+
+        filter_collection = self.db["filters"]
+        single_filt = filter_collection.find_one({'_id': fid})
+        if single_filt is not None:
+            return single_filt["_id"]
+        else:
+            return None
+
+    def removeFilter(self, fid):
+        """
+        Delete a filter based on the _id / FID
+        :param fid:
+        :return:
+        """
+        if fid is not None:
+            filter_collection = self.db["filters"]
+            return filter_collection.remove({"_id": fid})
+        else:
+            return False
 
 
     def writeKey(self, key, value):

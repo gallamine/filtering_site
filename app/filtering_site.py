@@ -1,54 +1,47 @@
-import db as dbclass
+import uuid
+from app import app
 from flask import Flask
 from flask import request
 from flask.ext import restful
 from flask import jsonify
+
+from app import db as dbclass
 import filter
-import uuid
-import json
 
 
-class MyServer(Flask):
+MAX_TAPS = 8192
 
-    def __init__(self, *args, **kwargs):
-        super(MyServer, self).__init__(*args, **kwargs)
-
-        try:
-            APPLICATION_PATH = "/Users/william/Documents/filtering_site/"
-            f = open(APPLICATION_PATH + '.mongo', 'r')
-            username, password = f.read().split("\t")
-            # Load filters from db
-            self.db = dbclass.Database(username, password)
-
-            self.all_filters = self.db.loadAllFilters() #db.readKey('all_filters')
-            if self.all_filters is False:
-                self.all_filters = {}
-
-        except:
-            print "No filters saved"
-
-app = MyServer(__name__)
-api = restful.Api(app)
 
 
 def createNewFilter(request):
     """
-
+    Create a new filter based on the input parameters
     :return:
     """
 
     fid = uuid.uuid4()
     try:
         app.all_filters[str(fid)] = filter.Filter(fid)
-
-        filt_type = request.args.get('type','lpf')
-        #TODO: Put an upper limit on the tap size
+        # TODO: Automatically expand the list of parameters so the scipy docs can be followed exactly
+        filt_type = request.args.get('type', 'lpf')
         num_taps = request.args.get('num_taps', 40)
-        cutoff = request.args.get('cutoff',0.5)
-        # TODO: What other windows does scipy support?
-        window = ('kaiser', 8)
-        config = {'num_taps': num_taps, 'cutoff': cutoff, 'window': window}
-        app.all_filters[str(fid)].makeFilter(filt_type, config)
+        if num_taps > MAX_TAPS:
+            num_taps = MAX_TAPS
+            #TODO: Return an warning that the output was coerced.
+
+        cutoff = request.args.get('cutoff', 0.5)
+        window = request.args.get('window', 'hamming')   # Another example "('kaiser',8)"
+        pass_zero = request.args.get('pass_zero', "True")  # Default is LPF
+        if pass_zero == "false" or pass_zero == "False":
+            pass_zero = False
+        else:
+            pass_zero = True
+
+        config = {'num_taps': num_taps, 'cutoff': cutoff, 'window': window, 'pass_zero': pass_zero}
+        ret = app.all_filters[str(fid)].makeFilter(filt_type, config)
+        if ret is not True:
+            return ret
+
 
         app.db.saveFilter(app.all_filters[str(fid)])
         return jsonify({'fid': str(fid)})
@@ -57,11 +50,49 @@ def createNewFilter(request):
         return jsonify({'error': e})
 
 
+@app.route('/fft/')
+def fft_commands():
+    """
+    Return fourier constants
+    :return:
+    """
+
+    if request.args is None:
+        return "Pass in data via ?d=[1,2,3, ... ]. Fs is specified via ?fs=samples_per_timeperiod"
+
+    data = request.args.get('data')
+    try:
+        fs = request.args.get('fs')
+        window = request.args.get('window')
+    except:
+        fs = None
+        window = ('kaiser',8)
+
+
+
+    return False
+
+
+@app.route('/filter/get_windows')
+def get_windows():
+    """
+    Return a list of all the FIR windows you can use
+    http://docs.scipy.org/doc/scipy-0.14.0/reference/generated/scipy.signal.get_window.html#scipy.signal.get_window
+    :return:
+    """
+
+    #TODO: Implement this function to return a list of all windows
+
+    return False
+
+
 @app.route('/filter/<command>')
 def filter_commands(command):
     """
-    Operations to do to a filter pass the FID via fid=XXXXX arguemnt
-    :param command:
+    Operations to do to a filter pass the FID via fid=XXXXX argument
+    padding=True preserves filter history (data isn't 0 at beginning, it's the remainder of the old data
+    window = string or tuple of string and parameter values
+    :param command: new, taps, run
     :return:
     """
 
@@ -77,6 +108,7 @@ def filter_commands(command):
 
                 if command == "taps":
                     return jsonify({'taps': app.all_filters[fid].returnTaps()})
+
                 elif command == "run":
                     # Run the filter using the data provided in data
                     data = request.args.get('data', '')
@@ -84,7 +116,8 @@ def filter_commands(command):
                     if data == '':
                         return jsonify({'error': 'Send me some data!'})
                     else:
-                        data_resp = app.all_filters[fid].runFilter(data)
+                        padding = request.args.get('padding', 'True')    # Preserve filter history
+                        data_resp = app.all_filters[fid].runFilter(data, padding)
                         if isinstance(data_resp, dict):
                             return jsonify(data_resp)
                         else:
@@ -133,12 +166,12 @@ def show_spectrum(filt_type):
     """
     f = filter.Filter()
     try:
-        num_taps = request.args.get('num_taps','')
-        cutoff = request.args.get('cutoff','')
+        num_taps = request.args.get('num_taps', '')
+        cutoff = request.args.get('cutoff', '')
     except:
         num_taps = 40
         cutoff = 0.5
-    window = ('kaiser',8)
+    window = ('kaiser', 8)
     f.make_FIR_LPF(num_taps, cutoff, window)
     return f.returnSpectrum()
 
@@ -154,7 +187,3 @@ def login():
         </form>
     '''
 
-if __name__ == '__main__':
-
-    app.run(passthrough_errors = True)
-    #app.run(debug=True)
