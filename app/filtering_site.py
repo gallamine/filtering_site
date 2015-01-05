@@ -4,7 +4,7 @@ from flask import Flask
 from flask import request
 from flask.ext import restful
 from flask import jsonify
-
+import dsp_helpers
 from app import db as dbclass
 import filter
 
@@ -58,12 +58,16 @@ def fft_commands():
     """
 
     if request.args is None:
-        return "Pass in data via ?d=[1,2,3, ... ]. Fs is specified via ?fs=samples_per_timeperiod"
+        return "Pass in data via ?data=[1,2,3, ... ]. Fs is specified via ?fs=samples_per_timeperiod"
 
     data = request.args.get('data')
+    if data is None:
+        return "Send data"
     try:
-        fs = request.args.get('fs')
-        window = request.args.get('window')
+        fs = request.args.get('fs', 1.0)
+        window = request.args.get('window', None)
+
+        dsp_helper.fft(data)
     except:
         fs = None
         window = ('kaiser',8)
@@ -80,6 +84,14 @@ def get_windows():
     http://docs.scipy.org/doc/scipy-0.14.0/reference/generated/scipy.signal.get_window.html#scipy.signal.get_window
     :return:
     """
+    # TODO: How to support tuples in the request string?
+    window_type = request.args.get('type')
+    if window_type is None:
+        return jsonify(dsp_helpers.get_window("all"))
+
+    else:
+        nx = request.args.get('nx', 100)
+        return jsonify(dsp_helpers.get_window(window_type))
 
     #TODO: Implement this function to return a list of all windows
 
@@ -162,6 +174,21 @@ def filter_plotting(fid, command):
 def hello_world():
     #args_dict = request.args
     #return args_dict
+    doc = """
+    /filter/new returns a FID string. Use this to reference your filter. This string is referenced below as <fid>
+    <Br>
+    /filter/<fid>/plots/taps returns a plot of the filter taps
+    <br>
+    /filter/<fid>/plots/spectrum returns a plot of the filter spectrum
+    <br>
+    /filter/taps?fid=<fid> returns a json dictionary of the filter tap values if you'd like to use it in another project.
+    <br>
+    /filter/run?fid=<fid>&data=[comma,separated,array,of,values] will run the filter using the supplied data. It has memory,
+    meaning running it in succession will change the output until it reaches a steady state value. To turn off memory supply
+    the &padding=False argument when running.
+    When run the filter will return a json dict of the input data and hte output data.
+
+    """
     return 'Go to /filter/new to get a filter handle!<br>'
 
 @app.route('/spectrum/<filt_type>')
@@ -182,15 +209,4 @@ def show_spectrum(filt_type):
     f.make_FIR_LPF(num_taps, cutoff, window)
     return f.returnSpectrum()
 
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    if request.method == 'POST':
-        session['username'] = request.form['username']
-        return redirect(url_for('index'))
-    return '''
-        <form action="" method="post">
-            <p><input type=text name=username>
-            <p><input type=submit value=Login>
-        </form>
-    '''
 

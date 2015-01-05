@@ -131,3 +131,4 @@ class Filter():
         return send_file(buf,\
                      attachment_filename='spectrum.png',\
                      mimetype='image/png')
+
