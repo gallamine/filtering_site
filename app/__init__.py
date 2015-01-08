@@ -26,5 +26,6 @@ class MyServer(Flask):
             exit()
 
 app = MyServer(__name__)
+CORS(app, allow_headers='Content-Type')
 
 from app import filtering_site
