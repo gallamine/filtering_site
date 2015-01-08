@@ -7,10 +7,9 @@ from flask import jsonify
 import dsp_helpers
 from app import db as dbclass
 import filter
-
+from flask.ext.cors import CORS, cross_origin
 
 MAX_TAPS = 8192
-
 
 
 def createNewFilter(request):
@@ -51,6 +50,7 @@ def createNewFilter(request):
 
 
 @app.route('/fft/')
+@cross_origin()
 def fft_commands():
     """
     Return fourier constants
@@ -78,6 +78,7 @@ def fft_commands():
 
 
 @app.route('/filter/get_windows')
+@cross_origin()
 def get_windows():
     """
     Return a list of all the FIR windows you can use
@@ -99,6 +100,7 @@ def get_windows():
 
 
 @app.route('/filter/<command>')
+@cross_origin()
 def filter_commands(command):
     """
     Operations to do to a filter pass the FID via fid=XXXXX argument
@@ -149,6 +151,7 @@ def filter_commands(command):
 
 
 @app.route('/filter/<fid>/plots/<command>')
+@cross_origin()
 def filter_plotting(fid, command):
     '''
 
@@ -192,6 +195,7 @@ def hello_world():
     return 'Go to /filter/new to get a filter handle!<br>'
 
 @app.route('/spectrum/<filt_type>')
+@cross_origin()
 def show_spectrum(filt_type):
     """
     Draw a spectrum for the specififed filter type. Don't save the filter

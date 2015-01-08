@@ -2,7 +2,7 @@ __author__ = 'william'
 
 from flask import Flask
 from app import db as dbclass
-
+from flask.ext.cors import CORS
 
 
 class MyServer(Flask):
@@ -26,4 +26,5 @@ class MyServer(Flask):
             exit()
 
 app = MyServer(__name__)
+
 from app import filtering_site
