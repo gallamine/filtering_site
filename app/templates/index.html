@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<<<<<<< HEAD
 <html>
 <head lang="en">
     <meta charset="utf-8">
@@ -15,10 +16,40 @@
       <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
+=======
+<html lang="en">
+<head>
+
+  <!-- Basic Page Needs
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <meta charset="utf-8">
+  <title>SignalFilt.com</title>
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <!-- Mobile Specific Metas
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- FONT
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
+
+  <!-- CSS
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <link rel="stylesheet" href="css/normalize.css">
+  <link rel="stylesheet" href="css/skeleton.css">
+
+  <!-- Favicon
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <link rel="icon" type="image/png" href="images/favicon.png">
+
+>>>>>>> origin
 </head>
 <body>
 
 
+<<<<<<< HEAD
 
 
 <h1>SignalFilt.com</h1>
@@ -28,23 +59,54 @@ If you have timeseries data (like stock prices, heartrate, car speed, daily weig
 filter a good way to do it is with a digital filter. A very simple, and pretty poor, digital filter is the moving average
 where you take all the samples in a time window and average them.
 <br>
+=======
+  <!-- Primary Page Layout
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <div class="container">
+    <div class="row">
+      <div class="eleven column" style="margin-top: 25%">
+
+<h1>SignalFilt.com</h1>
+<h2>An API for timeseries filtering</h2>
+<p>
+If you have timeseries data (like stock prices, heartrate, car speed, daily weight, etc.) that you want to smooth or
+filter a good way to do it is with a digital filter. A very simple, and pretty poor, digital filter is the moving average
+where you take all the samples in a time window and average them.
+</p><p>
+>>>>>>> origin
 A better way to do this is using a properly designed digital filter like a FIR filter (a moving average is a simple
 implementation of a FIR filter). This site lets you make a "cloud" filter, stream in data, and have it stream out the filtered
 data. It's built using Flask, MongoDB, and the Python scientific stack. The project source code is available on
 <a href="https://github.com/gallamine/filtering_site">Github</a>. Pull requests accepted!
+<<<<<<< HEAD
 
 <h3>How to Use</h3>
 
 <ls>
+=======
+</p>
+
+<h3>How to Use</h3>
+<p>
+<ol>
+>>>>>>> origin
     <li>Create a filter (filter/new/?num_taps=XX&cutoff=0.5). Returns FID for accessing it in the future
     <li>Pass data into filter. (filter/run?fid=FID&data=comma-separated-list-of-numbers). Return output.
     <li>Get taps back from a filter (filter/taps?fid=FID
     <li>Get plots of the spectrum (filter//plots/spectrum)
     <li>Get plots of the taps (filter//plots/taps)
+<<<<<<< HEAD
 </ls>
 
 <h3>Example</h3>
 
+=======
+</ol>
+</p>
+
+<h3>Example</h3>
+          <p>
+>>>>>>> origin
 Request a filter:
 
 <blockquote>
@@ -64,6 +126,7 @@ Returns
 <blockquote>
     {"taps": [-2.699590722999809e-05, -9.571648736609075e-05, 0.00022746057046863687, 0.0004532889927679489, -0.0008123695659798543, -0.0013526853178325636, 0.002131832417054574, 0.0032182039343885928, -0.004693094712191772, -0.006654672412400711, 0.009225516486430906, 0.012566939975580282, -0.01690659534195153, -0.02259366850583002, 0.030216521337431083, 0.040879325585750456, -0.05695458800751139, -0.0846422455799253, 0.14676275681380313, 0.44905078572454343, 0.44905078572454343, 0.14676275681380313, -0.0846422455799253, -0.05695458800751139, 0.040879325585750456, 0.030216521337431083, -0.02259366850583002, -0.01690659534195153, 0.012566939975580282, 0.009225516486430906, -0.006654672412400711, -0.004693094712191772, 0.0032182039343885928, 0.002131832417054574, -0.0013526853178325636, -0.0008123695659798543, 0.0004532889927679489, 0.00022746057046863687, -9.571648736609075e-05, -2.699590722999809e-05]}
 </blockquote>
+<<<<<<< HEAD
 
 You can see what the filter response is for a given type of filter by visiting:
 
@@ -73,21 +136,49 @@ or
 
 http://gallamine.pythonanywhere.com/filter/<fid>/plots/taps
 
+=======
+</p>
+          <p>
+You can see what the filter response is for a given type of filter by visiting:
+
+http://www.signalfilt.com/filter/&#x3C;fid&#x3E;/plots/spectrum
+
+or
+
+http://www.signalfilt.com/filter/&#x3C;fid&#x3E;/plots/taps
+</p>
+          <p>
+>>>>>>> origin
 For example,
 
 <blockquote>
     http://gallamine.pythonanywhere.com/spectrum/fir?num_taps=40&cutoff=0.4
 </blockquote>
         returns:
+<<<<<<< HEAD
+=======
+          </p>
+>>>>>>> origin
 <p>
     <img src="http://gallamine.pythonanywhere.com/spectrum/fir?num_taps=40&cutoff=0.4">
 </p>
 
+<<<<<<< HEAD
 <!-- Optional theme -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap-theme.min.css">
 
 <!-- Latest compiled and minified JavaScript -->
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+=======
+
+
+      </div>
+    </div>
+  </div>
+
+<!-- End Document
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+>>>>>>> origin
 
 </body>
 </html>
