@@ -55,8 +55,8 @@ data. It's built using Flask, MongoDB, and the Python scientific stack. The proj
     <li>Create a filter (filter/new/?num_taps=XX&cutoff=0.5). Returns FID for accessing it in the future
     <li>Pass data into filter. (filter/run?fid=FID&data=comma-separated-list-of-numbers). Return output.
     <li>Get taps back from a filter (filter/taps?fid=FID
-    <li>Get plots of the spectrum (filter//plots/spectrum)
-    <li>Get plots of the taps (filter//plots/taps)
+    <li>Get plots of the spectrum (filter/&#x3C;fid&#x3E;/plots/spectrum)
+    <li>Get plots of the taps (filter/&#x3C;fid&#x3E;/plots/taps)
 </ol>
 </p>
 
@@ -65,7 +65,7 @@ data. It's built using Flask, MongoDB, and the Python scientific stack. The proj
 Request a filter:
 
 <blockquote>
-curl http://gallamine.pythonanywhere.com/filter/new
+curl http://www.signalfilt.com/filter/new
     </blockquote>
 Returns:
 <blockquote>
@@ -75,7 +75,7 @@ Returns:
 Get the filter taps:
 
 <blockquote>
-curl http://gallamine.pythonanywhere.com/filter/taps?fid=ba644c5c-2ff5-4cdd-94af-918f9517ec12
+curl http://www.signalfilt.com/filter/taps?fid=ba644c5c-2ff5-4cdd-94af-918f9517ec12
 </blockquote>
 Returns
 <blockquote>
@@ -95,12 +95,12 @@ http://www.signalfilt.com/filter/&#x3C;fid&#x3E;/plots/taps
 For example,
 
 <blockquote>
-    http://gallamine.pythonanywhere.com/spectrum/fir?num_taps=40&cutoff=0.4
+    http://www.signalfilt.com/spectrum/fir?num_taps=40&cutoff=0.4
 </blockquote>
         returns:
           </p>
 <p>
-    <img src="http://gallamine.pythonanywhere.com/spectrum/fir?num_taps=40&cutoff=0.4">
+    <img src="http://www.signalfilt.com/spectrum/fir?num_taps=40&cutoff=0.4">
 </p>
 
 
