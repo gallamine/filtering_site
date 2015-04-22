@@ -3,6 +3,8 @@ from app import app
 from flask import Flask
 from flask import request
 from flask.ext import restful
+from flask import render_template
+
 from flask import jsonify
 import dsp_helpers
 from app import db as dbclass
@@ -174,25 +176,9 @@ def filter_plotting(fid, command):
             return jsonify({'error': "Invalid filter ID"})
 
 @app.route('/')
+@cross_origin()
 def hello_world():
-    #args_dict = request.args
-    #return args_dict
-    doc = """
-    /filter/new returns a FID string. Use this to reference your filter. This string is referenced below as <fid>
-    <Br>
-    /filter/<fid>/plots/taps returns a plot of the filter taps
-    <br>
-    /filter/<fid>/plots/spectrum returns a plot of the filter spectrum
-    <br>
-    /filter/taps?fid=<fid> returns a json dictionary of the filter tap values if you'd like to use it in another project.
-    <br>
-    /filter/run?fid=<fid>&data=[comma,separated,array,of,values] will run the filter using the supplied data. It has memory,
-    meaning running it in succession will change the output until it reaches a steady state value. To turn off memory supply
-    the &padding=False argument when running.
-    When run the filter will return a json dict of the input data and hte output data.
-
-    """
-    return 'Go to /filter/new to get a filter handle!<br>'
+    return render_template('index.html')
 
 @app.route('/spectrum/<filt_type>')
 @cross_origin()
@@ -202,15 +188,27 @@ def show_spectrum(filt_type):
     :param filt_type:
     :return:
     """
-    f = filter.Filter()
+    f = filter.Filter(-1)
     try:
         num_taps = request.args.get('num_taps', '')
         cutoff = request.args.get('cutoff', '')
+        window = request.args.get('window', 'hamming')   # Another example "('kaiser',8)"
+        pass_zero = request.args.get('pass_zero', 'True')
+        if pass_zero == "false" or pass_zero == "False":
+            pass_zero = False
+        else:
+            pass_zero = True
     except:
         num_taps = 40
         cutoff = 0.5
-    window = ('kaiser', 8)
-    f.make_FIR_LPF(num_taps, cutoff, window)
-    return f.returnSpectrum()
+        window = "hamming"
+        pass_zero = True
+
+    # TODO: This can return an error that we need to catch and print
+    ret = f._makeFIR(num_taps, cutoff, window, pass_zero)
+    if ret is not True:
+        return ret
+    else:
+        return f.returnSpectrum()
 
 

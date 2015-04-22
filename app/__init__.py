@@ -11,7 +11,8 @@ class MyServer(Flask):
         super(MyServer, self).__init__(*args, **kwargs)
 
         try:
-            APPLICATION_PATH = "/Users/william/Documents/filtering_site/app/"
+            #APPLICATION_PATH = "/Users/william/Documents/filtering_site/app/"
+            APPLICATION_PATH = "/home/gallamine/filtering_site/app/"
             f = open(APPLICATION_PATH + '.mongo', 'r')
             username, password = f.read().split("\t")
             # Load filters from db
@@ -26,5 +27,6 @@ class MyServer(Flask):
             exit()
 
 app = MyServer(__name__)
+CORS(app, allow_headers='Content-Type')
 
 from app import filtering_site

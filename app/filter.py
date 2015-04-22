@@ -14,7 +14,7 @@ class Filter():
 
     supported_types = ['lpf', 'hpf']
 
-    def __init__(self,fid):
+    def __init__(self, fid):
         self.fid = fid
 
     def makeFilter(self,filt_type, config):
@@ -41,6 +41,9 @@ class Filter():
         assert type(pass_zero) is bool
 
         try:
+            if type(window) == unicode:
+                window = str(window)
+
             self.fir_coeff = signal.firwin(int(num_taps), float(cutoff), window=window, pass_zero=pass_zero)
             self.data = np.zeros(int(num_taps))
             return True
